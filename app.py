@@ -2,6 +2,8 @@
 from flask import Flask, escape, request, render_template
 import pickle
 import numpy as np
+import threading
+import signal
 
 app = Flask(__name__)
 model = pickle.load(open('model.pkl', 'rb'))
@@ -108,4 +110,6 @@ def predict():
 
 
 if __name__ == "__main__":
+    if threading.current_thread() == threading.main_thread():
+        signal.signal(signal.SIGTERM, lambda *args: sys.exit(0))
     app.run(debug=True)
